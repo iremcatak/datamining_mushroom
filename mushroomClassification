@@ -1,0 +1,159 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "name": "mushroom(final) adlı not defterinin kopyası",
+      "provenance": [],
+      "collapsed_sections": [],
+      "authorship_tag": "ABX9TyOQ0j20zMREAzjyXMbNoEnI",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/iremcatak/datamining_mushroom/blob/main/mushroomClassification\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import io \n",
+        "import numpy as np \n",
+        "import pandas as pd \n",
+        "import matplotlib.pyplot as plt \n",
+        "import seaborn as sns"
+      ],
+      "metadata": {
+        "id": "CjDhiKI5OLpL"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from google.colab import files         \n",
+        "uploaded = files.upload()"
+      ],
+      "metadata": {
+        "id": "okv5ArsP4SFy"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "data= pd.read_csv(io.BytesIO(uploaded['mushrooms.csv']))\n",
+        "data"
+      ],
+      "metadata": {
+        "id": "FAJkHsmUSpah"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "data.isnull().sum()"
+      ],
+      "metadata": {
+        "id": "sDNFKBomT2sk"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "columns = data.columns.to_list()\n",
+        "print(\"*column by column data distributions*\\n\")\n",
+        "for col in columns:\n",
+        "    print(col,\"\\n\",data[col].value_counts(),\"\\n\\n\")"
+      ],
+      "metadata": {
+        "id": "MfDyYzJxT5x4"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "total = float(len(data[columns[0]]))\n",
+        "plt.figure(figsize=(4,4))\n",
+        "sns.set(style=\"dark\")\n",
+        "i = sns.countplot(data[columns[0]])\n",
+        "for j in i.patches:\n",
+        "    height = j.get_height()\n",
+        "    i.text(j.get_x()+j.get_width()/2.,height + 3,'{:1.2f}'.format(height/total),ha=\"center\")\n",
+        "plt.title(\"Target \", fontsize = 15)\n",
+        "plt.show()"
+      ],
+      "metadata": {
+        "id": "tw4H6kNeT9NS"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "for col in columns[1:]:\n",
+        "    plt.figure(figsize=(7,4))\n",
+        "    sns.countplot(x=col , data=data ,palette='cubehelix')\n",
+        "    plt.title(col, fontsize=15)\n",
+        "    plt.show()\n",
+        "    print(\"% of total:\")\n",
+        "    print(round((data[col].value_counts()/data.shape[0]),4)*100)"
+      ],
+      "metadata": {
+        "id": "rB9POJI6UKzU"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "for col in columns[1:]: \n",
+        "    plt.figure(figsize=(15,10))\n",
+        "    plt.subplot(2,3,1)\n",
+        "    sns.countplot(x=col ,hue='class', data=data ,palette='cubehelix')\n",
+        "    plt.xlabel(col, fontsize=15)\n",
+        "    plt.legend(loc='upper right')"
+      ],
+      "metadata": {
+        "id": "FC0-m0yZUOPt"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "[ pd.pivot_table(data, index=[col,\"class\"], aggfunc = {col:np.count_nonzero}) for col in columns[1:]]"
+      ],
+      "metadata": {
+        "id": "d6feC9heUoAo"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
